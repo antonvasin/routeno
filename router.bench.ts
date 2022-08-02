@@ -40,17 +40,12 @@ const reno = createReno(createRenoMap([
  */
 
 // @ts-ignore unstable
-Deno.bench("GET createRouter", { group: "get" }, async () => {
+Deno.bench("GET routeno", { group: "get" }, async () => {
   await router(new Request("http://localhost/endpoint"));
 });
 
 // @ts-ignore unstable
-Deno.bench("GET reno", { group: "get" }, async () => {
-  await reno(new Request("http://localhost/endpoint"));
-});
-
-// @ts-ignore unstable
-Deno.bench("POST createRouter", { group: "post" }, async () => {
+Deno.bench("POST routeno", { group: "post" }, async () => {
   await router(
     new Request("http://localhost/endpoint2/123123123", { method: "POST" }),
   );
