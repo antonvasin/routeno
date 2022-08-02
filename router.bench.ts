@@ -32,28 +32,46 @@ const reno = createReno(createRenoMap([
   ],
 ]));
 
-/*
- * TODO: add benchmarks against other routing libs
- * - https://deno.land/x/sift@0.5.0
- * - https://deno.land/x/pressf@0.2.1
- * - https://deno.land/x/peko@v0.4.3
- */
+const baseUrl = "http://localhost";
+const urlParams = new URLSearchParams({ param1: "foo" });
+urlParams.append("param2", "abc");
+urlParams.append("param2", "cde");
+const queryString = urlParams.toString();
+
+// routeno benchmarks
 
 // @ts-ignore unstable
-Deno.bench("GET routeno", { group: "get" }, async () => {
-  await router(new Request("http://localhost/endpoint"));
+Deno.bench("GET routeno", { group: "GET" }, async () => {
+  await router(new Request(`${baseUrl}/endpoint`));
 });
 
 // @ts-ignore unstable
-Deno.bench("POST routeno", { group: "post" }, async () => {
+Deno.bench("GET + params routeno", { group: "GET + params" }, async () => {
+  await router(new Request(`${baseUrl}/endpoint?${queryString}`));
+});
+
+// @ts-ignore unstable
+Deno.bench("POST routeno", { group: "POST" }, async () => {
   await router(
-    new Request("http://localhost/endpoint2/123123123", { method: "POST" }),
+    new Request(`${baseUrl}/endpoint2/123123123`, { method: "POST" }),
   );
 });
 
+// reno benchmarks
+
 // @ts-ignore unstable
-Deno.bench("POST reno", { group: "post" }, async () => {
+Deno.bench("GET reno", { group: "GET" }, async () => {
+  await reno(new Request(`${baseUrl}/endpoint`));
+});
+
+// @ts-ignore unstable
+Deno.bench("GET + params reno", { group: "GET + params" }, async () => {
+  await reno(new Request(`${baseUrl}/endpoint?${queryString}`));
+});
+
+// @ts-ignore unstable
+Deno.bench("POST reno", { group: "POST" }, async () => {
   await reno(
-    new Request("http://localhost/endpoint2/123123123", { method: "POST" }),
+    new Request(`${baseUrl}/endpoint2/123123123`, { method: "POST" }),
   );
 });
