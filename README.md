@@ -9,7 +9,7 @@ Small opinionated router for Deno.
 ## Usage
 
 ```typescript
-import { createRouter } from "https://deno.land/x/routeno@0.0.1/mod.ts"
+import { createRouter } from "https://deno.land/x/routeno@0.1.0/mod.ts"
 import { serve } from "https://deno.land/std@0.145.0/http/mod.ts";
 
 function getProject(req: Request, params: Record<'id', string>) {
