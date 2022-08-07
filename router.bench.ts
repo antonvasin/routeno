@@ -5,6 +5,8 @@ import {
   forMethod,
 } from "https://deno.land/x/reno@v2.0.24/reno/mod.ts";
 
+import { Node } from "https://deno.land/x/router@v2.0.1/mod.ts";
+
 const router = createRouter({
   "/endpoint": () => new Response("Hello"),
   "/endpoint2/:id": {
