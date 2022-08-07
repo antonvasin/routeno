@@ -38,7 +38,7 @@ const routerr = new Node();
 routerr.add("/endpoint", () => new Response("Hello"));
 routerr.add(
   "/endpoint2/:id",
-  (params: any) =>
+  (params: unknown) =>
     new Response(JSON.stringify(params), {
       headers: { "Content-Type": "application/json" },
     }),
@@ -111,7 +111,7 @@ Deno.bench("router GET + params", { group: "GET + params" }, () => {
 });
 
 // @ts-ignore unstable
-Deno.bench("router POST", { group: "POST" }, async () => {
+Deno.bench("router POST", { group: "POST" }, () => {
   routeWithRouter(
     new Request(`${baseUrl}/endpoint2/123123123`, { method: "POST" }),
   );
