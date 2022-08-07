@@ -32,6 +32,13 @@ const reno = createReno(createRenoMap([
   ],
 ]));
 
+/*
+ * TODO: add benchmarks against other routing libs
+ * - https://deno.land/x/sift@0.5.0
+ * - https://deno.land/x/pressf@0.2.1
+ * - https://deno.land/x/peko@v0.4.3
+ */
+
 // @ts-ignore unstable
 Deno.bench('GET createRouter', { group: 'get' }, async () => {
   await router(new Request('http://localhost/endpoint'));
