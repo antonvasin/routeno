@@ -1,0 +1,63 @@
+name: Benchmarks
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup repo
+        uses: actions/checkout@v3
+
+      - name: Setup Deno
+        # uses: denoland/setup-deno@v1
+        uses: denoland/setup-deno@004814556e37c54a2f6e31384c9e18e983317366
+        with:
+          deno-version: v1.x
+
+      - name: Setup benchmarks
+        run: |
+          echo "BASE_SHA=$(echo ${{ github.event.pull_request.base.sha }} | cut -c1-8)" >> $GITHUB_ENV
+          echo "HEAD_SHA=$(echo ${{ github.event.pull_request.head.sha }} | cut -c1-8)" >> $GITHUB_ENV
+          echo "BASELINE_BENCH=$(mktemp)" >> $GITHUB_ENV
+          echo "CONTENDER_BENCH=$(mktemp)" >> $GITHUB_ENV
+          echo "PR_COMMENT=$(mktemp)" >>  $GITHUB_ENV
+
+      - name: Run benchmarks for HEAD
+        run: deno bench --unstable > ${{ env.CONTENDER_BENCH }}
+      - name: Checkout base
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+      - name: Run benchmarks for base
+        run: deno bench --unstable > ${{ env.BASELINE_BENCH }}
+      - name: Checkout base
+        uses: actions/checkout@v3
+      - name: Construct comment
+        run: |
+          echo 'Benchmark comparison for [`${{ env.BASE_SHA }}`](${{ github.event.repository.html_url }}/commit/${{ github.event.pull_request.base.sha }}) (base) vs [`${{ env.HEAD_SHA }}`](${{ github.event.repository.html_url }}/commit/${{ github.event.pull_request.head.sha }}) (PR)' >> pr_comment
+
+          echo '\n ## Base\n\n```' >> pr_comment
+          cat ${{ env.BASELINE_BENCH}} >> pr_comment
+          echo '```' >> pr_comment
+          echo '\n ## Head\n\n```' >> pr_comment
+          cat ${{ env.CONTENDER_BENCH}} >> pr_comment
+
+          cat pr_comment > ${{ env.PR_COMMENT }}
+
+      - name: 'Comment PR'
+        uses: actions/github-script@v4.0.2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: require('fs').readFileSync('${{ env.PR_COMMENT }}').toString()
+            });
