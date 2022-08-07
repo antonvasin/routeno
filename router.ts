@@ -43,7 +43,7 @@ export function createRouter(routeMap: RouteMap) {
     const url = new URLPattern({ pathname: route });
     const handleDefintion = routeMap[route];
 
-    if (typeof handleDefintion === 'function') {
+    if (typeof handleDefintion === "function") {
       routes.set(url, handleDefintion);
     } else {
       routes.set(url, methods(handleDefintion));
