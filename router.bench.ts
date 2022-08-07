@@ -34,6 +34,26 @@ const reno = createReno(createRenoMap([
   ],
 ]));
 
+const routerr = new Node();
+routerr.add("/endpoint", () => new Response("Hello"));
+routerr.add(
+  "/endpoint2/:id",
+  (params: any) =>
+    new Response(JSON.stringify(params), {
+      headers: { "Content-Type": "application/json" },
+    }),
+);
+// Minimal server implementation since router doesn't work with Request objects
+const routeWithRouter = (req: Request) => {
+  const [h, p] = routerr.find(req.url);
+
+  if (h) {
+    return h(p);
+  } else {
+    return new Response("Not Found", { status: 404 });
+  }
+};
+
 const baseUrl = "http://localhost";
 const urlParams = new URLSearchParams({ param1: "foo" });
 urlParams.append("param2", "abc");
@@ -43,17 +63,17 @@ const queryString = urlParams.toString();
 // routeno benchmarks
 
 // @ts-ignore unstable
-Deno.bench("GET routeno", { group: "GET" }, async () => {
+Deno.bench("routeno GET", { group: "GET" }, async () => {
   await router(new Request(`${baseUrl}/endpoint`));
 });
 
 // @ts-ignore unstable
-Deno.bench("GET + params routeno", { group: "GET + params" }, async () => {
+Deno.bench("routeno GET + params", { group: "GET + params" }, async () => {
   await router(new Request(`${baseUrl}/endpoint?${queryString}`));
 });
 
 // @ts-ignore unstable
-Deno.bench("POST routeno", { group: "POST" }, async () => {
+Deno.bench("routeno POST", { group: "POST" }, async () => {
   await router(
     new Request(`${baseUrl}/endpoint2/123123123`, { method: "POST" }),
   );
@@ -62,18 +82,37 @@ Deno.bench("POST routeno", { group: "POST" }, async () => {
 // reno benchmarks
 
 // @ts-ignore unstable
-Deno.bench("GET reno", { group: "GET" }, async () => {
+Deno.bench("reno GET", { group: "GET" }, async () => {
   await reno(new Request(`${baseUrl}/endpoint`));
 });
 
 // @ts-ignore unstable
-Deno.bench("GET + params reno", { group: "GET + params" }, async () => {
+Deno.bench("reno GET + params", { group: "GET + params" }, async () => {
   await reno(new Request(`${baseUrl}/endpoint?${queryString}`));
 });
 
 // @ts-ignore unstable
-Deno.bench("POST reno", { group: "POST" }, async () => {
+Deno.bench("reno POST", { group: "POST" }, async () => {
   await reno(
+    new Request(`${baseUrl}/endpoint2/123123123`, { method: "POST" }),
+  );
+});
+
+// router benchmarks
+
+// @ts-ignore unstable
+Deno.bench("router GET", { group: "GET" }, () => {
+  routeWithRouter(new Request(`${baseUrl}/endpoint`));
+});
+
+// @ts-ignore unstable
+Deno.bench("router GET + params", { group: "GET + params" }, () => {
+  routeWithRouter(new Request(`${baseUrl}/endpoint?${queryString}`));
+});
+
+// @ts-ignore unstable
+Deno.bench("router POST", { group: "POST" }, async () => {
+  routeWithRouter(
     new Request(`${baseUrl}/endpoint2/123123123`, { method: "POST" }),
   );
 });
