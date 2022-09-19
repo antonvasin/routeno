@@ -68,9 +68,13 @@ Deno.bench("routeno GET", { group: "GET", baseline: true }, async () => {
 });
 
 // @ts-ignore unstable
-Deno.bench("routeno GET + params", { group: "GET + params", baseline: true }, async () => {
-  await router(new Request(`${baseUrl}/endpoint?${queryString}`));
-});
+Deno.bench(
+  "routeno GET + params",
+  { group: "GET + params", baseline: true },
+  async () => {
+    await router(new Request(`${baseUrl}/endpoint?${queryString}`));
+  },
+);
 
 // @ts-ignore unstable
 Deno.bench("routeno POST", { group: "POST", baseline: true }, async () => {

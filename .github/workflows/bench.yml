@@ -47,13 +47,14 @@ jobs:
         run: |
           echo '<details><summary>Benchmark comparison between ${{ env.BASE_SHA }}..${{ env.HEAD_SHA }}</summary><p>' >> pr_comment
 
+          echo '' >> pr_comment
           echo '## Base' >> pr_comment
           echo '' >> pr_comment
           echo '```' >> pr_comment
           cat ${{ env.BASELINE_BENCH}} >> pr_comment
           echo '```' >> pr_comment
           echo '' >> pr_comment
-          echo '## Head\' >> pr_comment
+          echo '## Head' >> pr_comment
           echo '' >> pr_comment
           echo '```' >> pr_comment
           cat ${{ env.CONTENDER_BENCH}} >> pr_comment
