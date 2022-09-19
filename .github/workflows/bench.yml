@@ -40,13 +40,14 @@ jobs:
       #   uses: actions/checkout@v3
       - name: Construct comment
         run: |
-          echo 'Benchmark comparison for [`${{ env.BASE_SHA }}`](${{ github.event.repository.html_url }}/commit/${{ github.event.pull_request.base.sha }}) (base) vs [`${{ env.HEAD_SHA }}`](${{ github.event.repository.html_url }}/commit/${{ github.event.pull_request.head.sha }}) (PR)' >> pr_comment
+          echo '<details><summary>Benchmark comparison for [`${{ env.BASE_SHA }}`](${{ github.event.repository.html_url }}/commit/${{ github.event.pull_request.base.sha }}) (base) vs [`${{ env.HEAD_SHA }}`](${{ github.event.repository.html_url }}/commit/${{ github.event.pull_request.head.sha }}) (PR)</summary><p>' >> pr_comment
 
           echo '\n ## Base\n\n```' >> pr_comment
           cat ${{ env.BASELINE_BENCH}} >> pr_comment
           echo '```' >> pr_comment
           echo '\n ## Head\n\n```' >> pr_comment
           cat ${{ env.CONTENDER_BENCH}} >> pr_comment
+          echo '</p></details>' >> pr_comment
 
           cat pr_comment > ${{ env.PR_COMMENT }}
 
