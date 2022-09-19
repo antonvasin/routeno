@@ -7,6 +7,10 @@ permissions:
   contents: read
   pull-requests: write
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -30,18 +34,18 @@ jobs:
           echo "PR_COMMENT=$(mktemp)" >>  $GITHUB_ENV
 
       - name: Run benchmarks for HEAD
-        run: deno bench --unstable > ${{ env.CONTENDER_BENCH }}
+        run: NO_COLOR=true deno bench --unstable > ${{ env.CONTENDER_BENCH }}
       # - name: Checkout base
       #   uses: actions/checkout@v3
       #   with:
       #     ref: ${{ github.event.pull_request.base.sha }}
       # - name: Run benchmarks for base
-      #   run: deno bench --unstable > ${{ env.BASELINE_BENCH }}
+      #   run: NO_COLOR=true deno bench --unstable > ${{ env.BASELINE_BENCH }}
       # - name: Checkout base
       #   uses: actions/checkout@v3
       - name: Construct comment
         run: |
-          echo '<details><summary>Benchmark comparison</summary><p>' >> pr_comment
+          echo '<details><summary>Benchmark comparison between ${{ env.HEAD_SHA }}..${{ env.BASE_SHA }}</summary><p>' >> pr_comment
 
           echo 'Comparison for [`${{ env.BASE_SHA }}`](${{ github.event.repository.html_url }}/commit/${{ github.event.pull_request.base.sha }}) (base) vs [`${{ env.HEAD_SHA }}`](${{ github.event.repository.html_url }}/commit/${{ github.event.pull_request.head.sha }}) (PR)'
 
