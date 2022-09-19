@@ -63,17 +63,17 @@ const queryString = urlParams.toString();
 // routeno benchmarks
 
 // @ts-ignore unstable
-Deno.bench("routeno GET", { group: "GET" }, async () => {
+Deno.bench("routeno GET", { group: "GET", baseline: true }, async () => {
   await router(new Request(`${baseUrl}/endpoint`));
 });
 
 // @ts-ignore unstable
-Deno.bench("routeno GET + params", { group: "GET + params" }, async () => {
+Deno.bench("routeno GET + params", { group: "GET + params", baseline: true }, async () => {
   await router(new Request(`${baseUrl}/endpoint?${queryString}`));
 });
 
 // @ts-ignore unstable
-Deno.bench("routeno POST", { group: "POST" }, async () => {
+Deno.bench("routeno POST", { group: "POST", baseline: true }, async () => {
   await router(
     new Request(`${baseUrl}/endpoint2/123123123`, { method: "POST" }),
   );
