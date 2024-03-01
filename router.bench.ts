@@ -3,7 +3,7 @@ import {
   createRouteMap as createRenoMap,
   createRouter as createReno,
   forMethod,
-} from "https://deno.land/x/reno@v2.0.59/reno/mod.ts";
+} from "https://deno.land/x/reno@v2.0.105/reno/mod.ts";
 
 import { Node } from "https://deno.land/x/router@v2.0.1/mod.ts";
 

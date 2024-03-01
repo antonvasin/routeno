@@ -1,6 +1,6 @@
 export type RouteHandler<Params extends string = string> = (
   req: Request,
-  params?: Record<Params, string>,
+  params?: Partial<Record<Params, string>>,
 ) => Promise<Response> | Response;
 
 export type RouteMap = Record<

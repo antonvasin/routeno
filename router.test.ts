@@ -1,7 +1,10 @@
 import { createRouter } from "./mod.ts";
 import * as t from "https://deno.land/std@0.149.0/testing/asserts.ts";
 
-function echoParamsJSON(_req: Request, params?: Record<string, string>) {
+function echoParamsJSON(
+  _req: Request,
+  params?: Partial<Record<string, string>>,
+) {
   return Promise.resolve(
     new Response(JSON.stringify(params), {
       headers: { "Content-Type": "application/json" },
